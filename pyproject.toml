@@ -1,0 +1,70 @@
+[tool.poetry]
+name = "vexy"
+version = "0.0.1"
+description = "Generate VEX (Vulnerability Exploitability Exchange) CycloneDX documents"
+authors = ["Paul Horton <paul.horton@owasp.org>"]
+license = "Apache-2.0"
+readme = "README.md"
+homepage = "https://github.com/madpah/vexy"
+repository = "https://github.com/madpah/vexy"
+packages = [
+    { include = "vexy" }
+]
+include = [
+    "LICENSE", "NOTICE"
+]
+classifiers = [
+    # Trove classifiers - https://packaging.python.org/specifications/core-metadata/#metadata-classifier
+    # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
+    'Development Status :: 2 - Pre-Alpha',
+    'Intended Audience :: Developers',
+    'Intended Audience :: Information Technology',
+    'Intended Audience :: Legal Industry',
+    'Intended Audience :: System Administrators',
+    'Topic :: Security',
+    'Topic :: Software Development',
+    'Topic :: System :: Software Distribution',
+    'License :: OSI Approved :: Apache Software License',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Typing :: Typed'
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+# ATTENTION: keep `requirements.lowest.txt` file in sync
+cyclonedx-python-lib = ">= 2.0.0, < 3.0.0"
+packageurl-python = ">= 0.9"
+importlib-metadata = { version = ">= 3.4", python = "< 3.8" }
+
+[tool.poetry.dev-dependencies]
+autopep8 = "^1.6.0"
+isort = { version = "^5.10.0", python = ">= 3.6.1" }
+tox = "^3.25.0"
+coverage = "^6.2"
+mypy = "^0.961"
+flake8 = "^4.0.1"
+flake8-annotations = {version = "^2.7.0", python = ">= 3.6.2"}
+flake8-bugbear = "^22.6.22"
+flake8-isort = { version = "^4.1.0", python = ">= 3.6.1" }
+
+[tool.poetry.scripts]
+vexy = 'vexy.client:main'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.semantic_release]
+# https://python-semantic-release.readthedocs.io/en/latest/configuration.html
+version_variable = [
+    "pyproject.toml:version"
+]
+branch = "main"
+upload_to_pypi = true
+upload_to_repository = true
+upload_to_release = true
+build_command = "pip install poetry && poetry build"
+remove_dist = false  # dist results required for some CI automation
