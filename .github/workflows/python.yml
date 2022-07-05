@@ -1,0 +1,150 @@
+# encoding: utf-8
+
+# This file is part of Vexy
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) Paul Horton. All Rights Reserved.
+
+name: Python CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches-ignore: ['dependabot/**']
+  push:
+    tags: [ 'v*.*.*' ]  # run again on release tags to have tools mark them
+    branches: [ 'main' ]
+
+env:
+  REPORTS_DIR: CI_reports
+  PYTHON_VERSION_DEFAULT: "3.10"
+  POETRY_VERSION: "1.1.11"
+
+jobs:
+  coding-standards:
+    name: Linting & Coding Standards
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        # see https://github.com/actions/checkout
+        uses: actions/checkout@v3
+      - name: Setup Python Environment
+        # see https://github.com/actions/setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION_DEFAULT }}
+          architecture: 'x64'
+      - name: Install poetry
+        # see https://github.com/marketplace/actions/setup-poetry
+        uses: Gr1N/setup-poetry@v7
+        with:
+          poetry-version: ${{ env.POETRY_VERSION }}
+      - name: Install dependencies
+        run: poetry install
+      - name: Run tox
+        run: poetry run tox -e flake8 -s false
+
+  static-code-analysis:
+    name: Static Coding Analysis (py${{ matrix.python-version}} ${{ matrix.toxenv-factor }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - # test with the locked dependencies
+            python-version: '3.10'
+            toxenv-factor: 'locked'
+          - # test with the lowest dependencies
+            python-version: '3.7'
+            toxenv-factor: 'lowest'
+    steps:
+      - name: Checkout
+        # see https://github.com/actions/checkout
+        uses: actions/checkout@v3
+      - name: Setup Python Environment
+        # see https://github.com/actions/setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION_DEFAULT }}
+          architecture: 'x64'
+      - name: Install poetry
+        # see https://github.com/marketplace/actions/setup-poetry
+        uses: Gr1N/setup-poetry@v7
+        with:
+          poetry-version: ${{ env.POETRY_VERSION }}
+      - name: Install dependencies
+        run: poetry install
+      - name: Run tox
+        run: poetry run tox -e mypy-${{ matrix.toxenv-factor }} -s false
+
+  build-and-test:
+    name: Test (${{ matrix.os }} py${{ matrix.python-version }} ${{ matrix.toxenv-factor }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      REPORTS_ARTIFACT: tests-reports
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version:
+          - "3.10" # highest supported
+          - "3.9"
+          - "3.8"
+          - "3.7"  # lowest supported
+        toxenv-factor: ['locked']
+        include:
+          - # test with the lowest dependencies
+            os: 'ubuntu-latest'
+            python-version: '3.7'
+            toxenv-factor: 'lowest'
+    steps:
+      - name: Checkout
+        # see https://github.com/actions/checkout
+        uses: actions/checkout@v3
+      - name: Create reports directory
+        run: mkdir ${{ env.REPORTS_DIR }}
+      - name: Setup Python Environment
+        # see https://github.com/actions/setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: 'x64'
+      - name: Install poetry
+        # see https://github.com/marketplace/actions/setup-poetry
+        uses: Gr1N/setup-poetry@v7
+        with:
+          poetry-version: ${{ env.POETRY_VERSION }}
+      - name: Install dependencies
+        run: poetry install
+      - name: Ensure build successful
+        run: poetry build
+      - name: Run tox
+        run: poetry run tox -e py-${{ matrix.toxenv-factor }} -s false
+      - name: Generate coverage reports
+        run: >
+          poetry run coverage report &&
+          poetry run coverage xml -o ${{ env.REPORTS_DIR }}/coverage-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.toxenv-factor }}.xml &&
+          poetry run coverage html -d ${{ env.REPORTS_DIR }}
+      - name: Artifact reports
+        if: ${{ ! cancelled() }}
+        # see https://github.com/actions/upload-artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.REPORTS_ARTIFACT }}
+          path: ${{ env.REPORTS_DIR }}
+          if-no-files-found: error
