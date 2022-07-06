@@ -23,7 +23,13 @@ import enum
 from datetime import datetime
 from typing import Optional
 
+from cyclonedx.model.bom import Bom
 from cyclonedx.output import OutputFormat
+from rich.console import Console
+from rich.progress import Progress
+
+from vexy.parser.cyclonedx import CycloneDxJsonParser
+from vexy.sources import ALL_SOURCES
 
 
 @enum.unique
@@ -51,21 +57,65 @@ class VexyCmd:
 
     def __init__(self, args: argparse.Namespace) -> None:
         self._arguments = args
+        self._console = Console()
 
         if self._arguments.debug_enabled:
             self._DEBUG_ENABLED = True
+            self._arguments.quiet_enabled = False
             self._debug_message('!!! DEBUG MODE ENABLED !!!')
             self._debug_message('Parsed Arguments: {}'.format(self._arguments))
 
     def _get_output_format(self) -> _CLI_OUTPUT_FORMAT:
         return _CLI_OUTPUT_FORMAT(str(self._arguments.output_format).lower())
 
+    def _is_quiet(self) -> bool:
+        return bool(self._arguments.quiet_enabled)
+
     def execute(self) -> None:
-        pass
+        with Progress() as progress:
+            task_parse = progress.add_task(
+                'Parsing CycloneDX BOM for Components', total=100, visible=not self._is_quiet()
+            )
+            progress.start_task(task_id=task_parse)
+
+            parser = CycloneDxJsonParser(input_file=self._arguments.input_source)
+            parser.parse_bom()
+            progress.update(
+                task_id=task_parse, completed=100,
+                description=f'Parsed {len(parser.bom.components)} Components from CycloneDX SBOM'
+            )
+
+            vex = Bom()
+            data_source_tasks = {}
+            for ds_klass in ALL_SOURCES:
+                data_source = ds_klass(components=parser.bom.components)
+                data_source_tasks[ds_klass] = progress.add_task(
+                    f'Consulting {data_source.source_name()} for known vulnerabilities', total=100,
+                    visible=not self._is_quiet()
+                )
+                progress.update(
+                    task_id=data_source_tasks[ds_klass],
+                    description=f'{data_source.source_name()}: Querying for {len(data_source.valid_components)} '
+                                f'Components'
+                )
+                vulnerabilities = data_source.get_vulnerabilities()
+                progress.update(
+                    task_id=data_source_tasks[ds_klass], total=90,
+                    description=f'{data_source.source_name()}: Processing Vulnerabilities for '
+                                f'{len(data_source.valid_components)} Components'
+                )
+
+                # @todo: CALL OUT ANY COMPONENTS THAT WERE NOT QUERIED
+
+                for v in  vulnerabilities:
+                    pass
 
     @staticmethod
     def get_arg_parser(*, prog: Optional[str] = None) -> argparse.ArgumentParser:
         arg_parser = argparse.ArgumentParser(prog=prog, description='Vexy VEX Generator')
+
+        arg_parser.add_argument('-q', action='store_true', help='Quiet - no console output', dest='quiet_enabled')
+        arg_parser.add_argument('-X', action='store_true', help='Enable debug output', dest='debug_enabled')
 
         input_method_group = arg_parser.add_argument_group(
             title='Input CycloneDX BOM',
@@ -101,8 +151,6 @@ class VexyCmd:
             '--force', action='store_true', dest='output_file_overwrite',
             help='If outputting to a file and the stated file already exists, it will be overwritten.'
         )
-
-        arg_parser.add_argument('-X', action='store_true', help='Enable debug output', dest='debug_enabled')
 
         return arg_parser
 

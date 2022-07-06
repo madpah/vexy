@@ -38,6 +38,8 @@ python = "^3.7"
 cyclonedx-python-lib = ">= 2.0.0, < 3.0.0"
 packageurl-python = ">= 0.9"
 importlib-metadata = { version = ">= 3.4", python = "< 3.8" }
+ossindex-lib = "^1.0.0"
+rich = "^12.4.4"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.6.0"

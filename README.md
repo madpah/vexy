@@ -19,6 +19,21 @@ which contains known vulnerabilities from a selection of publicly available data
 
 Read the full [documentation][link_rtfd] for more details.
 
+## Why?
+
+A SBOM (Software Bill of Materials) is great for cataloging / knowing what components compose a software product.
+
+The same SBOM (in CycloneDX format) can also note _known_ vulnerabilities. What is _known_ is for a given point 
+in time - and will change as new vulnerabilities are discovered or disclosed.
+
+CycloneDX allows for separate BOM documents to reference each other through their 
+[BOM Link](https://cyclonedx.org/capabilities/bomlink/) capability.
+
+Wouldn't it be great if you could periodically generate a VEX based from your SBOM to keep things up to date, 
+without having to generate a fresh SBOM entirely?
+
+That is where **vexy** comes in.
+
 ## Installation
 
 Install this from [PyPi.org][link_pypi] using your preferred Python package manager.
