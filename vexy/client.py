@@ -25,6 +25,8 @@ from importlib import import_module
 from io import TextIOWrapper
 from os import getcwd, path
 from typing import cast, Dict, Optional, Set
+from string import printable
+from urllib.parse import quote
 
 import yaml
 from cyclonedx.model.bom import Bom
@@ -133,6 +135,8 @@ class VexyCmd:
 
                 i: int = 1
                 for v in vulnerabilities:
+                    for a in v.affects:
+                        a.ref = f'{parser.bom.urn()}#{quote(a.ref, safe=printable)}'
                     vex.vulnerabilities.add(v)
                     progress.update(
                         task_id=data_source_tasks[data_source.__class__],
