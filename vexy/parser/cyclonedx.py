@@ -28,6 +28,7 @@ from datetime import datetime
 from typing import Any, Dict, Set
 
 from cyclonedx.model.component import Component
+
 # See https://github.com/package-url/packageurl-python/issues/65
 from packageurl import PackageURL  # type: ignore
 

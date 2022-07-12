@@ -24,18 +24,19 @@ from datetime import datetime
 from importlib import import_module
 from io import TextIOWrapper
 from os import getcwd, path
-from typing import cast, Dict, Optional, Set
 from string import printable
+from typing import Dict, Optional, Set, cast
 from urllib.parse import quote
 
 import yaml
 from cyclonedx.model.bom import Bom
-from cyclonedx.output import OutputFormat, BaseOutput, SchemaVersion
+from cyclonedx.output import BaseOutput, OutputFormat, SchemaVersion
 from rich.console import Console
 from rich.progress import Progress
 
 from vexy.parser.cyclonedx import CycloneDxJsonParser
-from vexy.sources import ALL_SOURCES, BaseSource
+from vexy.sources import ALL_SOURCES
+from vexy.sources.base import BaseSource
 
 
 @enum.unique

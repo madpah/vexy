@@ -23,7 +23,6 @@ from typing import Dict, Type
 from .base import BaseSource
 from .ossindex import OssIndexSource
 
-
 ALL_SOURCES: Dict[str, Type[BaseSource]] = {
     'ossindex': OssIndexSource
 }

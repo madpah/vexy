@@ -19,20 +19,26 @@
 # Copyright (c) Paul Horton. All Rights Reserved.
 
 from decimal import Decimal
-# See https://github.com/package-url/packageurl-python/issues/65
-from packageurl import PackageURL  # type: ignore
 from typing import Any, Dict, Set
 
 from cyclonedx.model import XsUri
 from cyclonedx.model.component import Component
 from cyclonedx.model.impact_analysis import ImpactAnalysisAffectedStatus
-from cyclonedx.model.vulnerability import Vulnerability, VulnerabilityAdvisory, VulnerabilityRating, \
-    VulnerabilityReference, \
-    VulnerabilityScoreSource, VulnerabilitySeverity, VulnerabilitySource, BomTarget, BomTargetVersionRange
+from cyclonedx.model.vulnerability import (
+    BomTarget,
+    BomTargetVersionRange,
+    Vulnerability,
+    VulnerabilityAdvisory,
+    VulnerabilityRating,
+    VulnerabilityReference,
+    VulnerabilityScoreSource,
+    VulnerabilitySeverity,
+    VulnerabilitySource,
+)
 from ossindex.ossindex import OssIndex
 
-from .base import BaseSource
 from .. import EcoSystem
+from .base import BaseSource
 
 
 class OssIndexSource(BaseSource):

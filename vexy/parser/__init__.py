@@ -18,7 +18,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) Paul Horton. All Rights Reserved.
 
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from io import TextIOWrapper
 
 from cyclonedx.model.bom import Bom
@@ -45,5 +45,3 @@ class BaseParser(ABC):
     @abstractmethod
     def parse_bom(self) -> None:
         pass
-
-

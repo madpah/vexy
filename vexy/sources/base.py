@@ -18,10 +18,11 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) Paul Horton. All Rights Reserved.
 
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
+from typing import Any, Dict, Iterable, Optional, Set
+
 from cyclonedx.model.component import Component
 from cyclonedx.model.vulnerability import Vulnerability, VulnerabilitySource
-from typing import Any, Dict, Iterable, Optional, Set
 
 from .. import EcoSystem
 
