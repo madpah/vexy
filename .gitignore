@@ -23,3 +23,6 @@ venv/
 
 # Exclude generated docs
 docs/_build
+
+# vexy config files
+*.vexy.config

@@ -19,9 +19,8 @@
 # Copyright (c) Paul Horton. All Rights Reserved.
 
 from abc import abstractmethod, ABC
-from cyclonedx.model import XsUri
 from cyclonedx.model.component import Component
-from cyclonedx.model.vulnerability import VulnerabilitySource
+from cyclonedx.model.vulnerability import Vulnerability, VulnerabilitySource
 from typing import Any, Dict, Iterable, Optional, Set
 
 from .. import EcoSystem
@@ -29,10 +28,14 @@ from .. import EcoSystem
 
 class BaseSource(ABC):
 
-    def __init__(self, *, components: Iterable[Component], config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, *, config: Optional[Dict[str, Any]] = None) -> None:
         if config:
             self._configure_source(config=config)
 
+        self._all_components: Set[Component] = set()
+        self._valid_components: Set[Component] = set()
+
+    def process_components(self, *, components: Iterable[Component]) -> None:
         self._all_components = set(components)
         self._valid_components = set(filter(lambda c: self._component_complete_for_source(component=c), components))
 
@@ -45,7 +48,7 @@ class BaseSource(ABC):
         return self._valid_components
 
     @abstractmethod
-    def get_vulnerabilities(self) -> None:
+    def get_vulnerabilities(self) -> Set[Vulnerability]:
         pass
 
     @abstractmethod

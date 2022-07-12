@@ -21,15 +21,19 @@
 import argparse
 import enum
 from datetime import datetime
-from typing import Optional
+from importlib import import_module
+from io import TextIOWrapper
+from os import getcwd, path
+from typing import cast, Dict, Optional, Set
 
+import yaml
 from cyclonedx.model.bom import Bom
-from cyclonedx.output import OutputFormat
+from cyclonedx.output import OutputFormat, BaseOutput, SchemaVersion
 from rich.console import Console
 from rich.progress import Progress
 
 from vexy.parser.cyclonedx import CycloneDxJsonParser
-from vexy.sources import ALL_SOURCES
+from vexy.sources import ALL_SOURCES, BaseSource
 
 
 @enum.unique
@@ -38,9 +42,9 @@ class _CLI_OUTPUT_FORMAT(enum.Enum):
     JSON = 'json'
 
 
-_output_formats = {
-    _CLI_OUTPUT_FORMAT.XML: OutputFormat.XML,
-    _CLI_OUTPUT_FORMAT.JSON: OutputFormat.JSON,
+_output_formats: Dict[_CLI_OUTPUT_FORMAT, OutputFormat] = {
+    _CLI_OUTPUT_FORMAT.XML: OutputFormat('Xml'),
+    _CLI_OUTPUT_FORMAT.JSON: OutputFormat('Json'),
 }
 _output_default_filenames = {
     _CLI_OUTPUT_FORMAT.XML: 'cyclonedx-vex.xml',
@@ -49,6 +53,8 @@ _output_default_filenames = {
 
 
 class VexyCmd:
+    DEFAULT_CONFIG_FILE: str = '.vexy.config'
+
     # Whether debug output is enabled
     _DEBUG_ENABLED: bool = False
 
@@ -65,8 +71,26 @@ class VexyCmd:
             self._debug_message('!!! DEBUG MODE ENABLED !!!')
             self._debug_message('Parsed Arguments: {}'.format(self._arguments))
 
-    def _get_output_format(self) -> _CLI_OUTPUT_FORMAT:
+        self._data_sources: Set[BaseSource] = set()
+        self._attempt_source_config_load(config=self._arguments.vexy_config)
+
+        if not self._is_quiet():
+            self._console.print(
+                f'Vexy is configured to use [bold cyan]{len(self._data_sources)}[/bold cyan] data sources.'
+            )
+
+    def _attempt_source_config_load(self, config: TextIOWrapper) -> None:
+        # Attempts to Vexy source configuration at the locations
+        with config as config_f:
+            vexy_config = yaml.safe_load(config_f.read())
+            for source_key, source_config in vexy_config['sources'].items():
+                self._data_sources.add(ALL_SOURCES[source_key](config=source_config))
+
+    def get_cli_output_format(self) -> _CLI_OUTPUT_FORMAT:
         return _CLI_OUTPUT_FORMAT(str(self._arguments.output_format).lower())
+
+    def _get_output_format(self) -> OutputFormat:
+        return _output_formats[self.get_cli_output_format()]
 
     def _is_quiet(self) -> bool:
         return bool(self._arguments.quiet_enabled)
@@ -87,33 +111,72 @@ class VexyCmd:
 
             vex = Bom()
             data_source_tasks = {}
-            for ds_klass in ALL_SOURCES:
-                data_source = ds_klass(components=parser.bom.components)
-                data_source_tasks[ds_klass] = progress.add_task(
+            for data_source in self._data_sources:
+                data_source_tasks[data_source.__class__] = progress.add_task(
                     f'Consulting {data_source.source_name()} for known vulnerabilities', total=100,
                     visible=not self._is_quiet()
                 )
+                data_source.process_components(components=parser.bom.components)
                 progress.update(
-                    task_id=data_source_tasks[ds_klass],
+                    task_id=data_source_tasks[data_source.__class__], completed=25,
                     description=f'{data_source.source_name()}: Querying for {len(data_source.valid_components)} '
                                 f'Components'
                 )
                 vulnerabilities = data_source.get_vulnerabilities()
                 progress.update(
-                    task_id=data_source_tasks[ds_klass], total=90,
+                    task_id=data_source_tasks[data_source.__class__], completed=50,
                     description=f'{data_source.source_name()}: Processing Vulnerabilities for '
                                 f'{len(data_source.valid_components)} Components'
                 )
 
                 # @todo: CALL OUT ANY COMPONENTS THAT WERE NOT QUERIED
 
-                for v in  vulnerabilities:
-                    pass
+                i: int = 1
+                for v in vulnerabilities:
+                    vex.vulnerabilities.add(v)
+                    progress.update(
+                        task_id=data_source_tasks[data_source.__class__],
+                        completed=(50 + (i / len(vulnerabilities) * 50))
+                    )
+                    i += 1
+
+        output_format = self._get_output_format()
+        outputter = self._get_outputter(output_format=output_format, bom=vex)
+
+        if self._arguments.output_file == '-' or not self._arguments.output_file:
+            self._debug_message('Returning SBOM to STDOUT')
+            print(outputter.output_as_string())
+            return
+
+        # Check directory writable
+        output_file = self._arguments.output_file
+        output_filename = path.realpath(
+            output_file if isinstance(output_file, str) else _output_default_filenames[self.get_cli_output_format()]
+        )
+        self._debug_message('Will be outputting SBOM to file at: {}'.format(output_filename))
+        outputter.output_to_file(filename=output_filename, allow_overwrite=self._arguments.output_file_overwrite)
+
+    def _get_outputter(self, output_format: OutputFormat, bom: Bom) -> BaseOutput:
+        schema_version = SchemaVersion['V{}'.format(
+            str(self._arguments.output_schema_version).replace('.', '_')
+        )]
+        try:
+            module = import_module(f"cyclonedx.output.{self._arguments.output_format.lower()}")
+            output_klass = getattr(module, f"{output_format.value}{schema_version.value}")
+        except (ImportError, AttributeError):
+            raise ValueError(f"Unknown format {output_format.value.lower()!r}") from None
+
+        return cast(BaseOutput, output_klass(bom=bom))
 
     @staticmethod
     def get_arg_parser(*, prog: Optional[str] = None) -> argparse.ArgumentParser:
         arg_parser = argparse.ArgumentParser(prog=prog, description='Vexy VEX Generator')
 
+        arg_parser.add_argument(
+            '-c', '--config', action='store', type=argparse.FileType('r'),  # FileType does handle '-'
+            dest='vexy_config', required=True, default=f'{getcwd()}/{VexyCmd.DEFAULT_CONFIG_FILE}',
+            help='Configuration file for Vexy defining data sources to use and their configuration.'
+        )
         arg_parser.add_argument('-q', action='store_true', help='Quiet - no console output', dest='quiet_enabled')
         arg_parser.add_argument('-X', action='store_true', help='Enable debug output', dest='debug_enabled')
 

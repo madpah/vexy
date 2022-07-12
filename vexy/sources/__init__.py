@@ -18,12 +18,12 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) Paul Horton. All Rights Reserved.
 
-from typing import Set, Type
+from typing import Dict, Type
 
 from .base import BaseSource
 from .ossindex import OssIndexSource
 
 
-ALL_SOURCES: Set[Type[BaseSource]] = {
-    OssIndexSource
+ALL_SOURCES: Dict[str, Type[BaseSource]] = {
+    'ossindex': OssIndexSource
 }
