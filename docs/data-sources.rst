@@ -20,4 +20,18 @@
 Data Sources
 ============
 
-Coming soon!
+OSS Index
+------------
+
+- Supports authentication: ✓
+- Requires authentication: ✗
+
+Configuration
+~~~~~~~~~~~~~
+
+.. code-block::
+
+    sources:
+        ossindex:
+            username: <your-username>
+            password: <your-password>
