@@ -121,6 +121,6 @@ def _component_from_xml(xml_element: Element) -> Component:
             if e.nodeName == 'purl':
                 jd.update({e.nodeName: PackageURL.from_string(purl=str(cast(Text, e.firstChild).data).strip())})
             elif e.nodeName not in _XML_IGNORE_KEYS:
-                jd.update({e.nodeName: str(cast(Text, e.firstChild)..data).strip()})
+                jd.update({e.nodeName: str(cast(Text, e.firstChild).data).strip()})
 
     return Component(**jd)
