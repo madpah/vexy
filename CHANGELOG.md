@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.2 (2022-07-13)
+### Fix
+* Pin ci to use python-semantic-release@v7.28.1 as newer breaks CI ([`d1a1fe6`](https://github.com/madpah/vexy/commit/d1a1fe6f221fc9f557828188613c0e329a19a881))
+
 ## v0.1.1 (2022-07-13)
 ### Fix
 * Typing broke some use cases ([`5965816`](https://github.com/madpah/vexy/commit/59658165a2789b59d93a0e3844b35b5c5fe303dd))
