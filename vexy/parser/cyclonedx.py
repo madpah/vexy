@@ -24,12 +24,12 @@ Contains classes and methods for parsing a Component List from CycloneDX BOM doc
 
 import json
 import keyword
-from datetime import datetime
-from typing import cast, Any, Dict, Set
+from typing import Any, Dict, Set, cast
 from xml.dom.minidom import Element, Text, parseString
 
 from cyclonedx.model.bom import Bom
 from cyclonedx.model.component import Component
+
 # See https://github.com/package-url/packageurl-python/issues/65
 from packageurl import PackageURL  # type: ignore
 
@@ -54,10 +54,6 @@ class CycloneDxJsonParser(BaseParser):
 
             # Process Metadata
             bom_metadata_data = bom_data.get('metadata')
-            self.bom.metadata.timestamp = datetime.strptime(
-                bom_metadata_data.get('timestamp').replace('Z', '+00:00'),
-                '%Y-%m-%dT%H:%M:%S.%f%z'
-            )
             self.bom.metadata.component = _component_from_json(bom_metadata_data.get('component'))
 
             # Process Components
@@ -82,10 +78,6 @@ class CycloneDxXmlParser(BaseParser):
 
             # Process Metadata
             bom_metadata_data = bom_data.documentElement.getElementsByTagName('metadata')[0]
-            self.bom.metadata.timestamp = datetime.strptime(
-                bom_metadata_data.getElementsByTagName('timestamp')[0].firstChild.data.replace('Z', '+00:00'),
-                '%Y-%m-%dT%H:%M:%S.%f%z'
-            )
             self.bom.metadata.component = _component_from_xml(
                 xml_element=bom_metadata_data.getElementsByTagName('component')[0]
             )
