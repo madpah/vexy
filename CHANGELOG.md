@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.4 (2022-07-13)
+### Fix
+* Remove date parsing from source BOM ([`3d1e0d9`](https://github.com/madpah/vexy/commit/3d1e0d94917df6b4b32da06900c846e771720689))
+
 ## v0.1.3 (2022-07-13)
 ### Fix
 * Remove parsing of input BOM timestamp - we do not use it ([`8b40f70`](https://github.com/madpah/vexy/commit/8b40f70487f20c4e21f72ed329330226082a31f3))
