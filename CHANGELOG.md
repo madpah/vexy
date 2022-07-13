@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.5 (2022-07-13)
+### Fix
+* Release CI pipeline syntax error ([`c0c7846`](https://github.com/madpah/vexy/commit/c0c78461c2e288825214640300917edfe24cb04f))
+
 ## v0.1.4 (2022-07-13)
 ### Fix
 * Remove date parsing from source BOM ([`3d1e0d9`](https://github.com/madpah/vexy/commit/3d1e0d94917df6b4b32da06900c846e771720689))
