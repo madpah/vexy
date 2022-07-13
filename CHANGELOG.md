@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.3 (2022-07-13)
+### Fix
+* Remove parsing of input BOM timestamp - we do not use it ([`8b40f70`](https://github.com/madpah/vexy/commit/8b40f70487f20c4e21f72ed329330226082a31f3))
+
 ## v0.1.2 (2022-07-13)
 ### Fix
 * Pin ci to use python-semantic-release@v7.28.1 as newer breaks CI ([`d1a1fe6`](https://github.com/madpah/vexy/commit/d1a1fe6f221fc9f557828188613c0e329a19a881))
