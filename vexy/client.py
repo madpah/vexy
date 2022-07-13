@@ -34,6 +34,7 @@ from cyclonedx.output import BaseOutput, OutputFormat, SchemaVersion
 from rich.console import Console
 from rich.progress import Progress
 
+from vexy.parser import BaseParser
 from vexy.parser.cyclonedx import CycloneDxJsonParser, CycloneDxXmlParser
 from vexy.sources import ALL_SOURCES
 from vexy.sources.base import BaseSource
@@ -105,6 +106,7 @@ class VexyCmd:
             )
             progress.start_task(task_id=task_parse)
 
+            parser: BaseParser
             if str(self._arguments.input_source.name).endswith('.json'):
                 parser = CycloneDxJsonParser(input_file=self._arguments.input_source)
             elif str(self._arguments.input_source.name).endswith('.xml'):

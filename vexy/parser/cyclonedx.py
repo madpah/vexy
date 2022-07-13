@@ -26,7 +26,7 @@ import json
 import keyword
 from datetime import datetime
 from typing import Any, Dict, Set
-from xml.dom.minidom import Element, parseString
+from xml.dom.minidom import Element, Text, parseString
 
 from cyclonedx.model.bom import Bom
 from cyclonedx.model.component import Component
@@ -117,7 +117,7 @@ def _component_from_json(json_data: Dict[str, Any]) -> Component:
 def _component_from_xml(xml_element: Element) -> Component:
     jd = {}
     for e in xml_element.childNodes:
-        if isinstance(e, Element):
+        if isinstance(e, Element) and isinstance(e, Text):
             if e.nodeName == 'purl':
                 jd.update({e.nodeName: PackageURL.from_string(purl=str(e.firstChild.data).strip())})
             elif e.nodeName not in _XML_IGNORE_KEYS:
