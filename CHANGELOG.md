@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.7 (2022-07-13)
+### Fix
+* Use a known working release pipeline ([`c51e613`](https://github.com/madpah/vexy/commit/c51e6132f5a653385486eda5efa54faece7719e7))
+
 ## v0.1.6 (2022-07-13)
 ### Fix
 * Release CI pipeline syntax error ([`b5b8529`](https://github.com/madpah/vexy/commit/b5b852955810082009a7c308f91d4a1284aa6368))
