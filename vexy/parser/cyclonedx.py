@@ -24,11 +24,12 @@ Contains classes and methods for parsing a Component List from CycloneDX BOM doc
 
 import json
 import keyword
-from typing import cast, Any, Dict, Set
+from typing import Any, Dict, Set, cast
 from xml.dom.minidom import Element, Text, parseString
 
 from cyclonedx.model.bom import Bom
 from cyclonedx.model.component import Component
+
 # See https://github.com/package-url/packageurl-python/issues/65
 from packageurl import PackageURL  # type: ignore
 
