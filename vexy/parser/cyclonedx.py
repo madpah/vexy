@@ -25,7 +25,7 @@ Contains classes and methods for parsing a Component List from CycloneDX BOM doc
 import json
 import keyword
 from datetime import datetime
-from typing import Any, Dict, Set
+from typing import cast, Any, Dict, Set
 from xml.dom.minidom import Element, Text, parseString
 
 from cyclonedx.model.bom import Bom
@@ -117,10 +117,10 @@ def _component_from_json(json_data: Dict[str, Any]) -> Component:
 def _component_from_xml(xml_element: Element) -> Component:
     jd = {}
     for e in xml_element.childNodes:
-        if isinstance(e, Element) and isinstance(e, Text):
+        if isinstance(e, Element):
             if e.nodeName == 'purl':
-                jd.update({e.nodeName: PackageURL.from_string(purl=str(e.firstChild.data).strip())})
+                jd.update({e.nodeName: PackageURL.from_string(purl=str(cast(Text, e.firstChild).data).strip())})
             elif e.nodeName not in _XML_IGNORE_KEYS:
-                jd.update({e.nodeName: str(e.firstChild.data).strip()})
+                jd.update({e.nodeName: str(cast(Text, e.firstChild)..data).strip()})
 
     return Component(**jd)
