@@ -30,7 +30,7 @@ from typing import Dict, Optional, Set, cast
 from urllib.parse import quote
 
 import yaml
-from cyclonedx.model import Tool, ExternalReference, ExternalReferenceType, XsUri
+from cyclonedx.model import ExternalReference, ExternalReferenceType, Tool, XsUri
 from cyclonedx.model.bom import Bom
 from cyclonedx.output import BaseOutput, OutputFormat, SchemaVersion
 from rich.console import Console
@@ -63,7 +63,7 @@ else:
     from importlib_metadata import version as meta_version
 
 try:
-    __ThisToolVersion: Optional[str] = str(meta_version(__package__))  # type: ignore[no-untyped-call]
+    __ThisToolVersion: Optional[str] = str(meta_version('vexy'))
 except Exception:
     __ThisToolVersion = None
 ThisTool = Tool(vendor='Vexy', name='vexy', version=__ThisToolVersion or 'UNKNOWN')
@@ -162,7 +162,7 @@ class VexyCmd:
             )
 
             vex = Bom()
-            vex.metadata.tools.add(ThisTool`st)
+            vex.metadata.tools.add(ThisTool)
             data_source_tasks = {}
             for data_source in self._data_sources:
                 data_source_tasks[data_source.__class__] = progress.add_task(
