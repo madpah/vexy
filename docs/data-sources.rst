@@ -23,6 +23,7 @@ Data Sources
 OSS Index
 ------------
 
+- See https://ossindex.sonatype.org
 - Supports authentication: ✓
 - Requires authentication: ✗
 
