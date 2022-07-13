@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "vexy"
-version = "0.1.4"
+version = "0.1.5"
 description = "Generate VEX (Vulnerability Exploitability Exchange) CycloneDX documents"
 authors = ["Paul Horton <paul.horton@owasp.org>"]
 license = "Apache-2.0"
