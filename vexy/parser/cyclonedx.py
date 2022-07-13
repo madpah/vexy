@@ -26,9 +26,10 @@ import json
 import keyword
 from datetime import datetime
 from typing import Any, Dict, Set
+from xml.dom.minidom import Element, parseString
 
+from cyclonedx.model.bom import Bom
 from cyclonedx.model.component import Component
-
 # See https://github.com/package-url/packageurl-python/issues/65
 from packageurl import PackageURL  # type: ignore
 
@@ -39,6 +40,7 @@ _JSON_IGNORE_KEYS = ['externalReferences', 'hashes', 'licenses']
 _JSON_KEY_MAPPINGS = {
     'type': 'component_type'
 }
+_XML_IGNORE_KEYS = ['externalReferences', 'hashes', 'licenses']
 
 
 class CycloneDxJsonParser(BaseParser):
@@ -46,6 +48,9 @@ class CycloneDxJsonParser(BaseParser):
     def parse_bom(self) -> None:
         with self.input_file as input_file:
             bom_data = json.loads(input_file.read())
+
+            # Handle Serial Number and Version
+            self.bom = Bom(serial_number=bom_data.get('serialNumber'), version=bom_data.get('version'))
 
             # Process Metadata
             bom_metadata_data = bom_data.get('metadata')
@@ -61,6 +66,37 @@ class CycloneDxJsonParser(BaseParser):
                 self.bom.components.add(_component_from_json(json_data=c))
 
 
+class CycloneDxXmlParser(BaseParser):
+
+    def parse_bom(self) -> None:
+        with self.input_file as input_file:
+            bom_data = parseString(input_file.read())
+
+            assert bom_data.documentElement.tagName == 'bom'
+
+            # Handle Serial Number and Version
+            bom_attributes = bom_data.documentElement.attributes
+            self.bom = Bom(
+                serial_number=bom_attributes.get('serialNumber').value, version=bom_attributes.get('version').value
+            )
+
+            # Process Metadata
+            bom_metadata_data = bom_data.documentElement.getElementsByTagName('metadata')[0]
+            self.bom.metadata.timestamp = datetime.strptime(
+                bom_metadata_data.getElementsByTagName('timestamp')[0].firstChild.data.replace('Z', '+00:00'),
+                '%Y-%m-%dT%H:%M:%S.%f%z'
+            )
+            self.bom.metadata.component = _component_from_xml(
+                xml_element=bom_metadata_data.getElementsByTagName('component')[0]
+            )
+
+            # Process Components
+            bom_component_data = bom_data.documentElement.getElementsByTagName('components')[0]
+            bom_components_data = bom_component_data.getElementsByTagName('component')
+            for c in bom_components_data:
+                self.bom.components.add(_component_from_xml(xml_element=c))
+
+
 def _component_from_json(json_data: Dict[str, Any]) -> Component:
     jd = {}
     for k, v in json_data.items():
@@ -74,5 +110,17 @@ def _component_from_json(json_data: Dict[str, Any]) -> Component:
         if k == 'purl':
             v = PackageURL.from_string(purl=v)
         jd.update({k: v})
+
+    return Component(**jd)
+
+
+def _component_from_xml(xml_element: Element) -> Component:
+    jd = {}
+    for e in xml_element.childNodes:
+        if isinstance(e, Element):
+            if e.nodeName == 'purl':
+                jd.update({e.nodeName: PackageURL.from_string(purl=str(e.firstChild.data).strip())})
+            elif e.nodeName not in _XML_IGNORE_KEYS:
+                jd.update({e.nodeName: str(e.firstChild.data).strip()})
 
     return Component(**jd)
