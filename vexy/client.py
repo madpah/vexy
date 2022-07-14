@@ -63,7 +63,7 @@ else:
     from importlib_metadata import version as meta_version
 
 try:
-    __ThisToolVersion: Optional[str] = str(meta_version('vexy'))
+    __ThisToolVersion: Optional[str] = str(meta_version('vexy'))  # type: ignore[no-untyped-call]
 except Exception:
     __ThisToolVersion = None
 ThisTool = Tool(vendor='Vexy', name='vexy', version=__ThisToolVersion or 'UNKNOWN')
