@@ -1,6 +1,7 @@
 # Contributing
 
 Pull requests are welcome, but please read this guidelines first.
+
 ## Setup
 
 This project uses [poetry]. Have it installed and setup first.

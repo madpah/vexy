@@ -20,6 +20,7 @@
 
 import argparse
 import enum
+import sys
 from datetime import datetime
 from importlib import import_module
 from io import TextIOWrapper
@@ -29,6 +30,7 @@ from typing import Dict, Optional, Set, cast
 from urllib.parse import quote
 
 import yaml
+from cyclonedx.model import ExternalReference, ExternalReferenceType, Tool, XsUri
 from cyclonedx.model.bom import Bom
 from cyclonedx.output import BaseOutput, OutputFormat, SchemaVersion
 from rich.console import Console
@@ -54,6 +56,47 @@ _output_default_filenames = {
     _CLI_OUTPUT_FORMAT.XML: 'cyclonedx-vex.xml',
     _CLI_OUTPUT_FORMAT.JSON: 'cyclonedx-vex.json',
 }
+
+if sys.version_info >= (3, 8):
+    from importlib.metadata import version as meta_version
+else:
+    from importlib_metadata import version as meta_version
+
+try:
+    __ThisToolVersion: Optional[str] = str(meta_version('vexy'))  # type: ignore[no-untyped-call]
+except Exception:
+    __ThisToolVersion = None
+ThisTool = Tool(vendor='Vexy', name='vexy', version=__ThisToolVersion or 'UNKNOWN')
+ThisTool.external_references.update([
+    ExternalReference(
+        reference_type=ExternalReferenceType.BUILD_SYSTEM,
+        url=XsUri('https://github.com/madpah/vexy/actions')
+    ),
+    ExternalReference(
+        reference_type=ExternalReferenceType.DISTRIBUTION,
+        url=XsUri('https://pypi.org/project/vexy/')
+    ),
+    ExternalReference(
+        reference_type=ExternalReferenceType.DOCUMENTATION,
+        url=XsUri('https://vexy.readthedocs.io/')
+    ),
+    ExternalReference(
+        reference_type=ExternalReferenceType.ISSUE_TRACKER,
+        url=XsUri('https://github.com/madpah/vexy/issues')
+    ),
+    ExternalReference(
+        reference_type=ExternalReferenceType.LICENSE,
+        url=XsUri('https://github.com/madpah/vexy/blob/main/LICENSE')
+    ),
+    ExternalReference(
+        reference_type=ExternalReferenceType.RELEASE_NOTES,
+        url=XsUri('https://github.com/madpah/vexy/blob/main/CHANGELOG.md')
+    ),
+    ExternalReference(
+        reference_type=ExternalReferenceType.VCS,
+        url=XsUri('https://github.com/madpah/vexy')
+    )
+])
 
 
 class VexyCmd:
@@ -119,6 +162,7 @@ class VexyCmd:
             )
 
             vex = Bom()
+            vex.metadata.tools.add(ThisTool)
             data_source_tasks = {}
             for data_source in self._data_sources:
                 data_source_tasks[data_source.__class__] = progress.add_task(

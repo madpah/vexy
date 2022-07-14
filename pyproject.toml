@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "vexy"
-version = "0.1.7"
+version = "0.2.0"
 description = "Generate VEX (Vulnerability Exploitability Exchange) CycloneDX documents"
 authors = ["Paul Horton <paul.horton@owasp.org>"]
 license = "Apache-2.0"
@@ -16,7 +16,7 @@ include = [
 classifiers = [
     # Trove classifiers - https://packaging.python.org/specifications/core-metadata/#metadata-classifier
     # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
-    'Development Status :: 2 - Pre-Alpha',
+    'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
     'Intended Audience :: Information Technology',
     'Intended Audience :: Legal Industry',

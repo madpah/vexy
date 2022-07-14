@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.0 (2022-07-14)
+### Feature
+* Add `vexy` as a Tool to generated VEX documents ([`f2378a8`](https://github.com/madpah/vexy/commit/f2378a820b88a6ee10036d4f771b5dd0e11925cb))
+* Add `vexy` as a Tool to generated VEX documents ([`70ea250`](https://github.com/madpah/vexy/commit/70ea250609ed8bf673637483691406d6b56f9dd8))
+
+### Fix
+* Disable mypy `warn_unused_ignores` to get mypy passing on all variants ([`e331e72`](https://github.com/madpah/vexy/commit/e331e72aac0002543066151841bbbeb661d5be97))
+
 ## v0.1.7 (2022-07-13)
 ### Fix
 * Use a known working release pipeline ([`c51e613`](https://github.com/madpah/vexy/commit/c51e6132f5a653385486eda5efa54faece7719e7))
