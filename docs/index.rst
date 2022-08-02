@@ -31,7 +31,7 @@ Known vulnerabilities change over time - we always know more about the security 
 tomorrow than we did today. So how do we keep our BOMs updated with this information?
 
 `CycloneDX`_ also allows for BOMs to interlink for the above reason. The best way to manage this scenario is to
-generate a BOM that describes your software release, excluding VEX data, and then have a tool (perhaps `Vexy`?)
+generate a BOM that describes your software release, excluding VEX data, and then have a tool (perhaps `vexy`?)
 produce you a VEX document (in `CycloneDX`_ format) that links back to your SBOM.
 
 Did I confuse you? If so - read more about `Independent BOM and VEX here`_.
@@ -49,5 +49,5 @@ Did I confuse you? If so - read more about `Independent BOM and VEX here`_.
 
 
 .. _CycloneDX: https://cyclonedx.org
-.. _Vulnerability  Exploitability Exchange: https://cyclonedx.org/capabilities/#vulnerability-exploitability-exchange-vex
+.. _Vulnerability Exploitability Exchange: https://cyclonedx.org/capabilities/#vulnerability-exploitability-exchange-vex
 .. _Independent BOM and VEX here: https://cyclonedx.org/capabilities/vex/

@@ -22,7 +22,9 @@ from typing import Dict, Type
 
 from .base import BaseSource
 from .ossindex import OssIndexSource
+from .osv import OsvSource
 
 ALL_SOURCES: Dict[str, Type[BaseSource]] = {
-    'ossindex': OssIndexSource
+    'ossindex': OssIndexSource,
+    'osv': OsvSource
 }

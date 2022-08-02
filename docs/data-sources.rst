@@ -36,3 +36,18 @@ Configuration
         ossindex:
             username: <your-username>
             password: <your-password>
+
+OSV.dev
+------------
+
+- See https://osv.dev/
+- Supports authentication: ✗
+- Requires authentication: ✗
+
+Configuration
+~~~~~~~~~~~~~
+
+.. code-block::
+
+    sources:
+        osv:
