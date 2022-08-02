@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.0 (2022-08-02)
+### Feature
+* Added OSV.dev as data source ([`402c669`](https://github.com/madpah/vexy/commit/402c669ab3a07a7ca485e860635504789107a0f5))
+
 ## v0.2.0 (2022-07-14)
 ### Feature
 * Add `vexy` as a Tool to generated VEX documents ([`f2378a8`](https://github.com/madpah/vexy/commit/f2378a820b88a6ee10036d4f771b5dd0e11925cb))
