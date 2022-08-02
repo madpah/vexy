@@ -51,10 +51,11 @@ class OsvSource(BaseSource):
             for osv_v in osv_vulnerabilities:
                 affected_versions: List[BomTargetVersionRange] = []
                 for affected in osv_v.affected:
-                    for r in affected.ranges:
-                        affected_versions.append(BomTargetVersionRange(
-                            version_range=r.as_purl_vers(), status=ImpactAnalysisAffectedStatus.AFFECTED
-                        ))
+                    if affected.ranges:
+                        for r in affected.ranges:
+                            affected_versions.append(BomTargetVersionRange(
+                                version_range=r.as_purl_vers(), status=ImpactAnalysisAffectedStatus.AFFECTED
+                            ))
                     for v in affected.versions:
                         affected_versions.append(BomTargetVersionRange(
                             version=v, status=ImpactAnalysisAffectedStatus.AFFECTED
@@ -75,11 +76,12 @@ class OsvSource(BaseSource):
                 credits_ = None
                 if osv_v.credits:
                     credit = osv_v.credits.pop()
+                    contact_1 = credit.contact.pop()
                     credits_ = VulnerabilityCredits(individuals=[
                         OrganizationalContact(
                             name=credit.name,
-                            phone=credit.contact if '@' not in credit.contact else None,
-                            email=credit.contact if '@' in credit.contact else None
+                            phone=contact_1 if '@' not in contact_1 else None,
+                            email=contact_1 if '@' in contact_1 else None
                         )
                     ])
 
@@ -100,7 +102,7 @@ class OsvSource(BaseSource):
                         credits=credits_,
                         affects_targets=[
                             BomTarget(
-                                ref=component.purl.to_string(),
+                                ref=component.bom_ref.value,
                                 versions=affected_versions
                             )
                         ],
