@@ -17,10 +17,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) Paul Horton. All Rights Reserved.
 
-from datetime import datetime
-from osv.api import OsvApi
-from osv.model import OsvPackage, OsvReferenceType, OsvSeverityType
-from typing import Any, Dict, Iterable, List, Optional, Set
+from typing import Any, Dict, List, Set
 
 from cyclonedx.model import OrganizationalContact, XsUri
 from cyclonedx.model.component import Component
@@ -35,6 +32,8 @@ from cyclonedx.model.vulnerability import (
     VulnerabilityReference,
     VulnerabilitySource,
 )
+from osv.api import OsvApi
+from osv.model import OsvPackage, OsvReferenceType, OsvSeverityType
 
 from .. import EcoSystem
 from .base import BaseSource
