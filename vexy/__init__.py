@@ -88,7 +88,6 @@ _ALL_ECOSYSTEMS = {
 }
 
 
-@enum.unique
 class EcoSystem(enum.Enum):
     """
     Languages/ecosystems to the PURL type
@@ -96,19 +95,29 @@ class EcoSystem(enum.Enum):
     Starting list taken from https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst
     """
 
+    BITBUCKET = 'BITBUCKET'
     CARGO = 'CARGO'
     COCOAPODS = 'COCOAPODS'
     COMPOSER = 'COMPOSER'
     CONAN = 'CONAN'
     CONDA = 'CONDA'
     CRAN = 'CRAN'
-    GO = 'GO'
+    DART = 'PUB'
+    DEBIAN = 'DEB'
+    DOCKER = 'DOCKER'
+    FLUTTER = 'PUB'
+    GENERIC = 'GENERIC'
+    GITHUB = 'GITHUB'
+    GO = 'GOLANG'
+    HASKELL = 'HACKAGE'
+    HEX = 'HEX'
     MAVEN = 'MAVEN'
     NPM = 'NPM'
     NUGET = 'NUGET'
+    OCI = 'OCI'
     PYPI = 'PYPI'
     RPM = 'RPM'
-    RUBY_GEM = 'RUBY_GEM'
+    RUBY_GEM = 'GEM'
     SWIFT = 'SWIFT'
 
     def get_info(self) -> EcoSystemType:

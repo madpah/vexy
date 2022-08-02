@@ -5,4 +5,5 @@ cyclonedx-python-lib == 3.0.0rc1
 packageurl-python == 0.9
 importlib-metadata == 3.4.0 # ; python_version < '3.8'
 ossindex-lib == 1.1.0
+osv-lib == 0.2.1
 rich == 12.4.4

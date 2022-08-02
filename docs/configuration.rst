@@ -38,6 +38,7 @@ An example configuration file might look as follows:
         ossindex:
             username: <your-username>
             password: <your-password>
+        osv:
 
 For details of what data sources are available and their specific configuration - see :doc:`data-sources`.
 
