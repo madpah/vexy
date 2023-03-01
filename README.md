@@ -107,7 +107,7 @@ See the [LICENSE][license_file] file for the full license.
 [contributing_file]: https://github.com/madpah/vexy/blob/master/CONTRIBUTING.md
 [link_rtfd]: https://vexy.readthedocs.io/
 
-[shield_gh-workflow-test]: https://img.shields.io/github/workflow/status/madpah/vexy/Python%20CI/master?logo=GitHub&logoColor=white "build"
+[shield_gh-workflow-test]: https://img.shields.io/github/actions/workflow/status/madpah/vexy/python.yml?branch=main "build"
 [shield_rtfd]: https://img.shields.io/readthedocs/vexy?logo=readthedocs&logoColor=white
 [shield_pypi-version]: https://img.shields.io/pypi/v/vexy?logo=Python&logoColor=white&label=PyPI "PyPI"
 [shield_docker-version]: https://img.shields.io/docker/v/madpah/vexy?logo=docker&logoColor=white&label=docker "docker"
