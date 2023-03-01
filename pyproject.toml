@@ -35,10 +35,10 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.7"
 # ATTENTION: keep `requirements.lowest.txt` file in sync
-cyclonedx-python-lib = ">= 3.0.0rc1, < 4.0.0"
+cyclonedx-python-lib = ">= 3.1.5, < 4.0.0"
 packageurl-python = ">= 0.9"
 importlib-metadata = { version = ">= 3.4", python = "< 3.8" }
-ossindex-lib = "^1.1.0"
+ossindex-lib = "^1.1.1"
 osv-lib = "^0.2.1"
 rich = "^12.4.4"
 

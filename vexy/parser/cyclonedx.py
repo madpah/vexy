@@ -25,6 +25,7 @@ Contains classes and methods for parsing a Component List from CycloneDX BOM doc
 import json
 import keyword
 from typing import Any, Dict, Set, cast
+from uuid import UUID
 from xml.dom.minidom import Element, Text, parseString
 
 from cyclonedx.model.bom import Bom
@@ -72,9 +73,11 @@ class CycloneDxXmlParser(BaseParser):
 
             # Handle Serial Number and Version
             bom_attributes = bom_data.documentElement.attributes
-            self.bom = Bom(
-                serial_number=bom_attributes.get('serialNumber').value, version=bom_attributes.get('version').value
-            )
+            self.bom = Bom()
+            if bom_attributes.get('serialNumber', None):
+                self.bom.uuid = UUID(bom_attributes.get('serialNumber').value)
+            # if bom_attributes.get('version', None):
+            #     self.bomn.version_ = bom_attributes.get('version').value
 
             # Process Metadata
             bom_metadata_data = bom_data.documentElement.getElementsByTagName('metadata')[0]
