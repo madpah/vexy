@@ -35,12 +35,11 @@ import yaml
 from cyclonedx.exception import CycloneDxException
 from cyclonedx.model import ExternalReference, ExternalReferenceType, Tool, XsUri
 from cyclonedx.model.bom import Bom
-from cyclonedx.output import BaseOutput, OutputFormat, SchemaVersion
+from cyclonedx.output import BaseOutput
+from cyclonedx.schema import OutputFormat, SchemaVersion
 from rich.console import Console
 from rich.progress import Progress
 
-from vexy.parser import BaseParser
-from vexy.parser.cyclonedx import CycloneDxJsonParser, CycloneDxXmlParser
 from vexy.sources import ALL_SOURCES
 from vexy.sources.base import BaseSource
 
@@ -157,10 +156,12 @@ class VexyCmd:
             try:
                 with self._arguments.input_source as input_bom_fh:
                     if str(self._arguments.input_source.name).endswith('.json'):
-                        input_bom = Bom.from_json(data=json.loads(input_bom_fh.read()))
+                        input_bom = Bom.from_json(data=json.loads(input_bom_fh.read()))  # type: ignore[attr-defined]
 
                     elif str(self._arguments.input_source.name).endswith('.xml'):
-                        input_bom = Bom.from_xml(data=ElementTree.fromstring(input_bom_fh.read()))
+                        input_bom = Bom.from_xml(  # type: ignore[attr-defined]
+                            data=ElementTree.fromstring(input_bom_fh.read())
+                        )
             except CycloneDxException as e:
                 print(f'Failure validating input BOM: {e}')
                 return

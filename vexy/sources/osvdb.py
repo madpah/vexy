@@ -17,22 +17,12 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) Paul Horton. All Rights Reserved.
 
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, Set
 
 import requests
-from cyclonedx.model import OrganizationalContact, XsUri
+from cyclonedx.model import XsUri
 from cyclonedx.model.component import Component
-from cyclonedx.model.impact_analysis import ImpactAnalysisAffectedStatus
-from cyclonedx.model.vulnerability import (
-    BomTarget,
-    BomTargetVersionRange,
-    Vulnerability,
-    VulnerabilityAdvisory,
-    VulnerabilityCredits,
-    VulnerabilityRating,
-    VulnerabilityReference,
-    VulnerabilitySource,
-)
+from cyclonedx.model.vulnerability import Vulnerability, VulnerabilitySource
 
 from .. import EcoSystem
 from .base import BaseSource
@@ -45,12 +35,13 @@ class OsvDbSource(BaseSource):
         total = 0
 
         for component in self.valid_components:
-            print(f'Querying OSV DB for known vulnerabilities for {component.purl.to_string()}')
-            vulns = requests.post('http://127.0.0.1:8888/api/v1/query', json={
-                'purl': component.purl.to_string()
-            }).json()
+            if component.purl:
+                print(f'Querying OSV DB for known vulnerabilities for {component.purl.to_string()}')
+                vulns = requests.post('http://127.0.0.1:8888/api/v1/query', json={
+                    'purl': component.purl.to_string()
+                }).json()
 
-            total = total + len(vulns["results"])
+                total = total + len(vulns["results"])
             # for osv_v in osv_vulnerabilities:
             #     affected_versions: List[BomTargetVersionRange] = []
             #     for affected in osv_v.affected:
