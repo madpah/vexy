@@ -17,9 +17,9 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) Paul Horton. All Rights Reserved.
 
-import requests
 from typing import Any, Dict, List, Set
 
+import requests
 from cyclonedx.model import OrganizationalContact, XsUri
 from cyclonedx.model.component import Component
 from cyclonedx.model.impact_analysis import ImpactAnalysisAffectedStatus
