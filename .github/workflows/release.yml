@@ -26,7 +26,6 @@ on:
   workflow_dispatch:
 
 env:
-  PYTHON_SEMANTIC_RELEASE_VERSION: "7.33.2"
   PYTHON_VERSION_DEFAULT: "3.10"
   POETRY_VERSION: "1.1.12"
 
@@ -69,7 +68,7 @@ jobs:
       - name: Python Semantic Release
         # see https://python-semantic-release.readthedocs.io/en/latest/automatic-releases/github-actions.html
         # see https://github.com/relekang/python-semantic-release
-        uses: python-semantic-release/python-semantic-release@v${{ PYTHON_SEMANTIC_RELEASE_VERSION }}
+        uses: python-semantic-release/python-semantic-release@v7.33.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           repository_username: __token__
