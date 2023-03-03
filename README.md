@@ -113,7 +113,7 @@ See the [LICENSE][license_file] file for the full license.
 [shield_docker-version]: https://img.shields.io/docker/v/madpah/vexy?logo=docker&logoColor=white&label=docker "docker"
 [shield_license]: https://img.shields.io/github/license/madpah/vexy?logo=open%20source%20initiative&logoColor=white "license"
 [shield_twitter-follow]: https://img.shields.io/badge/Twitter-follow-blue?logo=Twitter&logoColor=white "twitter follow"
-[link_gh-workflow-test]: https://github.com/madpah/vexy/actions/workflows/python.yml?query=branch%3Amaster
+[link_gh-workflow-test]: https://img.shields.io/github/actions/workflow/status/madpah/vexy/python.yml?branch=main
 [link_pypi]: https://pypi.org/project/vexy/
 [link_docker]: https://hub.docker.com/r/madpah/vexy
 [link_twitter]: https://twitter.com/madpah
