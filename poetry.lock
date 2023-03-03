@@ -74,7 +74,7 @@ toml = ["tomli"]
 
 [[package]]
 name = "cyclonedx-python-lib"
-version = "4.0.0rc0"
+version = "4.0.0rc1"
 description = "A library for producing CycloneDX SBOM (Software Bill of Materials) files."
 category = "main"
 optional = false
@@ -83,7 +83,7 @@ python-versions = ">=3.7,<4.0"
 [package.dependencies]
 importlib-metadata = {version = ">=3.4", markers = "python_version < \"3.8\""}
 packageurl-python = ">=0.9"
-py-serializable = ">=0.10.0,<0.11.0"
+py-serializable = ">=0.11.0,<0.12.0"
 sortedcontainers = ">=2.4.0,<3.0.0"
 toml = ">=0.10.0,<0.11.0"
 
@@ -328,7 +328,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "py-serializable"
-version = "0.10.0"
+version = "0.11.0"
 description = "Library for serializing and deserializing Python Objects to and from JSON and XML."
 category = "main"
 optional = false
@@ -566,7 +566,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "flake8 (<5)", "pytest-co
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "6f6e0d99639a41f76886c3fc1d7f7efb2bdf1ab0601cd8c7d7d01f291d651279"
+content-hash = "b4cb97cbc902b7f7d8cf359860fb17015a5a935029ff4698d4289cebbefa3f46"
 
 [metadata.files]
 attrs = [
@@ -732,8 +732,8 @@ coverage = [
     {file = "coverage-6.5.0.tar.gz", hash = "sha256:f642e90754ee3e06b0e7e51bce3379590e76b7f76b708e1a71ff043f87025c84"},
 ]
 cyclonedx-python-lib = [
-    {file = "cyclonedx_python_lib-4.0.0rc0-py3-none-any.whl", hash = "sha256:cfc8f7eb589472e7cf02094d43f621f915a1ef5e5c34288ba4243f45dd804e19"},
-    {file = "cyclonedx_python_lib-4.0.0rc0.tar.gz", hash = "sha256:d521c5d531c53b3da52290b16dfc210a38298d41132043faa9741096b471a6a7"},
+    {file = "cyclonedx_python_lib-4.0.0rc1-py3-none-any.whl", hash = "sha256:ca36ffb3008217c010e2a0ee51afb1b9983e8c38cc0af2125272a65df217f3a6"},
+    {file = "cyclonedx_python_lib-4.0.0rc1.tar.gz", hash = "sha256:fe13a7d597c454fa6df85f4821160e43225b7aa93522b3f3a7ea8465eb469e2c"},
 ]
 distlib = [
     {file = "distlib-0.3.6-py2.py3-none-any.whl", hash = "sha256:f35c4b692542ca110de7ef0bea44d73981caeb34ca0b9b6b2e6d7790dda8f80e"},
@@ -833,8 +833,8 @@ py = [
     {file = "py-1.11.0.tar.gz", hash = "sha256:51c75c4126074b472f746a24399ad32f6053d1b34b68d2fa41e558e6f4a98719"},
 ]
 py-serializable = [
-    {file = "py-serializable-0.10.0.tar.gz", hash = "sha256:7cd2f7fdac54b30fa0be1d46d33e8187ce870d757b309430440fce24c13a4567"},
-    {file = "py_serializable-0.10.0-py3-none-any.whl", hash = "sha256:324f7199deaff0dbbb74e54253b142f4fe83fa9f70849537c7eb6b0b1e9e44be"},
+    {file = "py-serializable-0.11.0.tar.gz", hash = "sha256:7a5834abd5bee8afa0bf3e39340af7e53e77285dff7323f417d4dc293b9d695e"},
+    {file = "py_serializable-0.11.0-py3-none-any.whl", hash = "sha256:245411c37ce816731bdb6e1a17d6e98a066f7abc6325c2052106cdc0af96d1c0"},
 ]
 pycodestyle = [
     {file = "pycodestyle-2.8.0-py2.py3-none-any.whl", hash = "sha256:720f8b39dde8b293825e7ff02c475f3077124006db4f440dcbc9a20b76548a20"},

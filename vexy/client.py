@@ -71,31 +71,31 @@ except Exception:
 ThisTool = Tool(vendor='Vexy', name='vexy', version=__ThisToolVersion or 'UNKNOWN')
 ThisTool.external_references.update([
     ExternalReference(
-        type_=ExternalReferenceType.BUILD_SYSTEM,
+        type=ExternalReferenceType.BUILD_SYSTEM,
         url=XsUri('https://github.com/madpah/vexy/actions')
     ),
     ExternalReference(
-        type_=ExternalReferenceType.DISTRIBUTION,
+        type=ExternalReferenceType.DISTRIBUTION,
         url=XsUri('https://pypi.org/project/vexy/')
     ),
     ExternalReference(
-        type_=ExternalReferenceType.DOCUMENTATION,
+        type=ExternalReferenceType.DOCUMENTATION,
         url=XsUri('https://vexy.readthedocs.io/')
     ),
     ExternalReference(
-        type_=ExternalReferenceType.ISSUE_TRACKER,
+        type=ExternalReferenceType.ISSUE_TRACKER,
         url=XsUri('https://github.com/madpah/vexy/issues')
     ),
     ExternalReference(
-        type_=ExternalReferenceType.LICENSE,
+        type=ExternalReferenceType.LICENSE,
         url=XsUri('https://github.com/madpah/vexy/blob/main/LICENSE')
     ),
     ExternalReference(
-        type_=ExternalReferenceType.RELEASE_NOTES,
+        type=ExternalReferenceType.RELEASE_NOTES,
         url=XsUri('https://github.com/madpah/vexy/blob/main/CHANGELOG.md')
     ),
     ExternalReference(
-        type_=ExternalReferenceType.VCS,
+        type=ExternalReferenceType.VCS,
         url=XsUri('https://github.com/madpah/vexy')
     )
 ])
