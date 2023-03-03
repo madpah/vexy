@@ -20,6 +20,7 @@
 
 import argparse
 import enum
+import json
 import sys
 from datetime import datetime
 from importlib import import_module
@@ -28,16 +29,17 @@ from os import getcwd, path
 from string import printable
 from typing import Dict, Optional, Set, cast
 from urllib.parse import quote
+from xml.etree import ElementTree
 
 import yaml
+from cyclonedx.exception import CycloneDxException
 from cyclonedx.model import ExternalReference, ExternalReferenceType, Tool, XsUri
 from cyclonedx.model.bom import Bom
-from cyclonedx.output import BaseOutput, OutputFormat, SchemaVersion
+from cyclonedx.output import BaseOutput
+from cyclonedx.schema import OutputFormat, SchemaVersion
 from rich.console import Console
 from rich.progress import Progress
 
-from vexy.parser import BaseParser
-from vexy.parser.cyclonedx import CycloneDxJsonParser, CycloneDxXmlParser
 from vexy.sources import ALL_SOURCES
 from vexy.sources.base import BaseSource
 
@@ -69,31 +71,31 @@ except Exception:
 ThisTool = Tool(vendor='Vexy', name='vexy', version=__ThisToolVersion or 'UNKNOWN')
 ThisTool.external_references.update([
     ExternalReference(
-        reference_type=ExternalReferenceType.BUILD_SYSTEM,
+        type=ExternalReferenceType.BUILD_SYSTEM,
         url=XsUri('https://github.com/madpah/vexy/actions')
     ),
     ExternalReference(
-        reference_type=ExternalReferenceType.DISTRIBUTION,
+        type=ExternalReferenceType.DISTRIBUTION,
         url=XsUri('https://pypi.org/project/vexy/')
     ),
     ExternalReference(
-        reference_type=ExternalReferenceType.DOCUMENTATION,
+        type=ExternalReferenceType.DOCUMENTATION,
         url=XsUri('https://vexy.readthedocs.io/')
     ),
     ExternalReference(
-        reference_type=ExternalReferenceType.ISSUE_TRACKER,
+        type=ExternalReferenceType.ISSUE_TRACKER,
         url=XsUri('https://github.com/madpah/vexy/issues')
     ),
     ExternalReference(
-        reference_type=ExternalReferenceType.LICENSE,
+        type=ExternalReferenceType.LICENSE,
         url=XsUri('https://github.com/madpah/vexy/blob/main/LICENSE')
     ),
     ExternalReference(
-        reference_type=ExternalReferenceType.RELEASE_NOTES,
+        type=ExternalReferenceType.RELEASE_NOTES,
         url=XsUri('https://github.com/madpah/vexy/blob/main/CHANGELOG.md')
     ),
     ExternalReference(
-        reference_type=ExternalReferenceType.VCS,
+        type=ExternalReferenceType.VCS,
         url=XsUri('https://github.com/madpah/vexy')
     )
 ])
@@ -149,16 +151,24 @@ class VexyCmd:
             )
             progress.start_task(task_id=task_parse)
 
-            parser: BaseParser
-            if str(self._arguments.input_source.name).endswith('.json'):
-                parser = CycloneDxJsonParser(input_file=self._arguments.input_source)
-            elif str(self._arguments.input_source.name).endswith('.xml'):
-                parser = CycloneDxXmlParser(input_file=self._arguments.input_source)
+            # parser: BaseParser
+            input_bom: Bom
+            try:
+                with self._arguments.input_source as input_bom_fh:
+                    if str(self._arguments.input_source.name).endswith('.json'):
+                        input_bom = Bom.from_json(data=json.loads(input_bom_fh.read()))  # type: ignore[attr-defined]
 
-            parser.parse_bom()
+                    elif str(self._arguments.input_source.name).endswith('.xml'):
+                        input_bom = Bom.from_xml(  # type: ignore[attr-defined]
+                            data=ElementTree.fromstring(input_bom_fh.read())
+                        )
+            except CycloneDxException as e:
+                print(f'Failure validating input BOM: {e}')
+                return
+
             progress.update(
                 task_id=task_parse, completed=100,
-                description=f'Parsed {len(parser.bom.components)} Components from CycloneDX SBOM'
+                description=f'Parsed {len(input_bom.components)} Components from CycloneDX SBOM'
             )
 
             vex = Bom()
@@ -169,7 +179,7 @@ class VexyCmd:
                     f'Consulting {data_source.source_name()} for known vulnerabilities', total=100,
                     visible=not self._is_quiet()
                 )
-                data_source.process_components(components=parser.bom.components)
+                data_source.process_components(components=input_bom.components)
                 progress.update(
                     task_id=data_source_tasks[data_source.__class__], completed=25,
                     description=f'{data_source.source_name()}: Querying for {len(data_source.valid_components)} '
@@ -187,7 +197,7 @@ class VexyCmd:
                 i: int = 1
                 for v in vulnerabilities:
                     for a in v.affects:
-                        a.ref = f'{parser.bom.urn()}#{quote(a.ref, safe=printable)}'
+                        a.ref = f'{input_bom.urn()}#{quote(a.ref, safe=printable)}'
                     vex.vulnerabilities.add(v)
                     progress.update(
                         task_id=data_source_tasks[data_source.__class__],

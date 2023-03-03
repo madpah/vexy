@@ -1,9 +1,9 @@
 # exactly pinned dependencies to the lowest version regardless of python_version
 # see pyptoject file for ranges
 
-cyclonedx-python-lib == 3.0.0rc1
+cyclonedx-python-lib == 4.0.0rc1
 packageurl-python == 0.9
 importlib-metadata == 3.4.0 # ; python_version < '3.8'
-ossindex-lib == 1.1.0
+ossindex-lib == 1.1.1
 osv-lib == 0.2.1
 rich == 12.4.4

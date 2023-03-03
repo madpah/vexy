@@ -54,7 +54,7 @@ class OsvSource(BaseSource):
                     if affected.ranges:
                         for r in affected.ranges:
                             affected_versions.append(BomTargetVersionRange(
-                                version_range=r.as_purl_vers(), status=ImpactAnalysisAffectedStatus.AFFECTED
+                                range=r.as_purl_vers(), status=ImpactAnalysisAffectedStatus.AFFECTED
                             ))
                     for v in affected.versions:
                         affected_versions.append(BomTargetVersionRange(
@@ -100,7 +100,7 @@ class OsvSource(BaseSource):
                         published=osv_v.published,
                         updated=osv_v.modified if osv_v.modified else None,
                         credits=credits_,
-                        affects_targets=[
+                        affects=[
                             BomTarget(
                                 ref=component.bom_ref.value,
                                 versions=affected_versions

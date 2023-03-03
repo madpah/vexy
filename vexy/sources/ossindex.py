@@ -71,7 +71,7 @@ class OssIndexSource(BaseSource):
                         cwes=[int(ossi_v.cwe[4:])] if ossi_v.cwe else None,
                         description=ossi_v.title,
                         detail=ossi_v.description,
-                        affects_targets=[
+                        affects=[
                             BomTarget(
                                 ref=ossi_c.get_package_url().to_string(),
                                 versions=[
