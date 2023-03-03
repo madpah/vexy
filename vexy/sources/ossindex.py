@@ -66,7 +66,7 @@ class OssIndexSource(BaseSource):
                     v = Vulnerability(
                         source=OssIndexSource.source(),
                         references=[
-                            VulnerabilityReference(id_=ossi_v.id, source=v_source)
+                            VulnerabilityReference(id=ossi_v.id, source=v_source)
                         ],
                         cwes=[int(ossi_v.cwe[4:])] if ossi_v.cwe else None,
                         description=ossi_v.title,
