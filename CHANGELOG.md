@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.1 (2023-03-03)
+### Fix
+* Handle parsing of BOM more safely ([`39d6f78`](https://github.com/madpah/vexy/commit/39d6f78fd517d4cfe53fa07214f69947762d71a0))
+* Update to latest contracts with `cyclonedx-python-lib` ([`fda01e0`](https://github.com/madpah/vexy/commit/fda01e047717dc1bf952f07cddd5ad2d551e9e35))
+* Bump to latest rc of `cyclonedx-python-lib` ([`8e3d05a`](https://github.com/madpah/vexy/commit/8e3d05a8cc0d1d50d317f7f1eb5dbceb6fe093f1))
+* Handle parsing of BOM more safely ([`a89862a`](https://github.com/madpah/vexy/commit/a89862a039ad918f278a57b64197fa9009fa28e0))
+
 ## v0.3.0 (2022-08-02)
 ### Feature
 * Added OSV.dev as data source ([`402c669`](https://github.com/madpah/vexy/commit/402c669ab3a07a7ca485e860635504789107a0f5))
