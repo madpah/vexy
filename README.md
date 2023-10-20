@@ -57,12 +57,15 @@ poetry add vexy
 ```text
 $ vexy --help
 
-usage: vexy [-h] -i FILE_PATH [--format {xml,json}] [--schema-version {1.4}] [-o FILE_PATH] [--force] [-X]
+usage: vexy [-h] -c VEXY_CONFIG [-q] [-X] -i FILE_PATH [--format {xml,json}] [--schema-version {1.4}] [-o FILE_PATH] [--force]
 
 Vexy VEX Generator
 
 options:
   -h, --help            show this help message and exit
+  -c VEXY_CONFIG, --config VEXY_CONFIG
+                        Configuration file for Vexy defining data sources to use and their configuration.
+  -q                    Quiet - no console output
   -X                    Enable debug output
 
 Input CycloneDX BOM:
