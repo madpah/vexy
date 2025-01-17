@@ -190,6 +190,8 @@ func main() {
 			for _, result := range sourceResults.Results {
 				if len(result.Vulnerabilities) > 0 {
 					log.Debug(fmt.Sprintf("Handling %d Vulnerabilities reported by %s for %s", len(result.Vulnerabilities), sourceResults.Source.Name, result.Component.BOMRef))
+					// TODO: Work out how to best merge when two sources report the same Vulnerability for a given Component
+					// This was not something that Vexy < 1.0 did anyway
 					*sbom.Vulnerabilities = append(*sbom.Vulnerabilities, result.Vulnerabilities...)
 				}
 			}
