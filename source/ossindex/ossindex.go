@@ -168,7 +168,7 @@ func ossIndexVulnerabiltiesToCdxVulnerabilties(input *[]ossindex.ComponentReport
 	componentPackageUrl, _ := packageurl.FromString(componentPurl)
 
 	for _, i := range *input {
-		var cvssScore = float64(*i.CvssScore)
+		var cvssScore = util.RoundTo1Decimal(float64(*i.CvssScore))
 		cweId, _ := strconv.Atoi((*i.Cwe)[4:])
 
 		cdxV := cdx.Vulnerability{
@@ -249,8 +249,8 @@ func (s *OssIndexVulnerabilitySource) SetConfiguration(config *config.VexyConfig
 	return true
 }
 
-// func init() {
-// 	source.TheVulnerabilitySourceRegistry.RegisterVulnerabilitySource("ossindex", &OssIndexVulnerabilitySource{
-// 		components: make([]*cdx.Component, 0),
-// 	})
-// }
+func init() {
+	source.TheVulnerabilitySourceRegistry.RegisterVulnerabilitySource("ossindex", &OssIndexVulnerabilitySource{
+		components: make([]*cdx.Component, 0),
+	})
+}

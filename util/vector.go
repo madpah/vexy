@@ -19,6 +19,7 @@
 package util
 
 import (
+	"math"
 	"strings"
 
 	gocvss20 "github.com/pandatix/go-cvss/20"
@@ -42,7 +43,6 @@ func ParseVector(vector string) (*VectorParseResult, error) {
 			return nil, err
 		}
 		result.BaseScore = cvss.BaseScore()
-		result.BaseScore = cvss.BaseScore()
 		rat, err := gocvss40.Rating(cvss.BaseScore())
 		if err != nil {
 			return nil, err
@@ -54,7 +54,6 @@ func ParseVector(vector string) (*VectorParseResult, error) {
 		if err != nil {
 			return nil, err
 		}
-		result.BaseScore = cvss.BaseScore()
 		result.BaseScore = cvss.BaseScore()
 		rat, err := gocvss40.Rating(cvss.BaseScore())
 		if err != nil {
@@ -88,4 +87,8 @@ func ParseVector(vector string) (*VectorParseResult, error) {
 	}
 
 	return &result, nil
+}
+
+func RoundTo1Decimal(x float64) float64 {
+	return math.Round(x*10) / 10
 }
