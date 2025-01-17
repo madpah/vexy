@@ -101,6 +101,7 @@ func printBanner() {
 	println("                               $$$$$$/                              ")
 	println("")
 	println(fmt.Sprintf("	Vexy Version: %s		Arch: %s", version, currentRuntime))
+	println(fmt.Sprintf("               : %s", commit))
 	println("")
 }
 
