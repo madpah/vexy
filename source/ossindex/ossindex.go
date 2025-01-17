@@ -28,6 +28,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/madpah/vexy/config"
 	"github.com/madpah/vexy/source"
+	"github.com/madpah/vexy/util"
 
 	cdx "github.com/CycloneDX/cyclonedx-go"
 	"github.com/package-url/packageurl-go"
@@ -181,8 +182,8 @@ func ossIndexVulnerabiltiesToCdxVulnerabilties(input *[]ossindex.ComponentReport
 			Ratings: &[]cdx.VulnerabilityRating{{
 				Source:   &ossIndexSource,
 				Score:    &cvssScore,
-				Severity: cvssScoreToSeverity(cvssScore),
-				Method:   cvssVectorToScoringMethod(*i.CvssVector),
+				Severity: util.CvssScoreToSeverity(cvssScore),
+				Method:   util.CvssVectorToScoringMethod(*i.CvssVector),
 				Vector:   *i.CvssVector,
 			}},
 			CWEs:        &[]int{cweId},
@@ -210,41 +211,6 @@ func ossIndexVulnerabiltiesToCdxVulnerabilties(input *[]ossindex.ComponentReport
 	}
 
 	return output
-}
-
-func cvssScoreToSeverity(score float64) cdx.Severity {
-	if score >= 9.0 {
-		return cdx.SeverityCritical
-	}
-	if score >= 7.0 {
-		return cdx.SeverityHigh
-	}
-	if score >= 4.0 {
-		return cdx.SeverityMedium
-	}
-	if score >= 0.0 {
-		return cdx.SeverityLow
-	}
-	return cdx.SeverityNone
-}
-
-func cvssVectorToScoringMethod(vector string) cdx.ScoringMethod {
-	if strings.HasPrefix(vector, "CVSS:4") {
-		return cdx.ScoringMethodCVSSv4
-	}
-	if strings.HasPrefix(vector, "CVSS:3.1/") {
-		return cdx.ScoringMethodCVSSv31
-	}
-	if strings.HasPrefix(vector, "CVSS:3.0/") {
-		return cdx.ScoringMethodCVSSv3
-	}
-	if strings.HasPrefix(vector, "CVSS:2") {
-		return cdx.ScoringMethodCVSSv2
-	}
-	if strings.HasPrefix(vector, "OWASP") {
-		return cdx.ScoringMethodOWASP
-	}
-	return cdx.ScoringMethodOther
 }
 
 func (s *OssIndexVulnerabilitySource) SetConfiguration(config *config.VexyConfig, vexyVersion string) bool {
@@ -283,8 +249,8 @@ func (s *OssIndexVulnerabilitySource) SetConfiguration(config *config.VexyConfig
 	return true
 }
 
-func init() {
-	source.TheVulnerabilitySourceRegistry.RegisterVulnerabilitySource("ossindex", &OssIndexVulnerabilitySource{
-		components: make([]*cdx.Component, 0),
-	})
-}
+// func init() {
+// 	source.TheVulnerabilitySourceRegistry.RegisterVulnerabilitySource("ossindex", &OssIndexVulnerabilitySource{
+// 		components: make([]*cdx.Component, 0),
+// 	})
+// }

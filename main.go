@@ -32,6 +32,7 @@ import (
 	"github.com/madpah/vexy/util"
 
 	_ "github.com/madpah/vexy/source/ossindex"
+	_ "github.com/madpah/vexy/source/osvdev"
 
 	cdx "github.com/CycloneDX/cyclonedx-go"
 	log "github.com/sirupsen/logrus"
@@ -100,7 +101,7 @@ func printBanner() {
 	println("                              $$    $$/                             ")
 	println("                               $$$$$$/                              ")
 	println("")
-	println(fmt.Sprintf("	Vexy Version: %s		Arch: %s", version, currentRuntime))
+	println(fmt.Sprintf("   Vexy Version: %s		Arch: %s", version, currentRuntime))
 	println(fmt.Sprintf("               : %s", commit))
 	println("")
 }
@@ -112,16 +113,18 @@ func main() {
 		os.Exit(1)
 	}
 
-	log.SetOutput(vexyLogFile)
-	if debugLogging {
-		log.SetLevel(log.DebugLevel)
-	} else {
-		log.SetLevel(log.InfoLevel)
-	}
 	log.SetFormatter(&util.LogFormatter{Module: "VEXY"})
 
 	flag.Usage = usage
 	flag.Parse()
+
+	log.SetOutput(vexyLogFile)
+	if debugLogging {
+		print("Enabling debug logging")
+		log.SetLevel(log.DebugLevel)
+	} else {
+		log.SetLevel(log.InfoLevel)
+	}
 
 	if !stdOutQuiet() {
 		printBanner()
@@ -182,11 +185,13 @@ func main() {
 	sbom.Vulnerabilities = &[]cdx.Vulnerability{}
 	for i := 0; i < len(source.TheVulnerabilitySourceRegistry.ValidSources); i++ {
 		sourceResults := <-sourceResponses
-		log.Debug(fmt.Sprintf("Processing evaluation %d results from %s", len(sourceResults.Results), sourceResults.Source.Name))
-		for _, result := range sourceResults.Results {
-			if len(result.Vulnerabilities) > 0 {
-				log.Debug(fmt.Sprintf("Handling %d Vulnerabilities reported by %s for %s", len(result.Vulnerabilities), sourceResults.Source.Name, result.Component.BOMRef))
-				*sbom.Vulnerabilities = append(*sbom.Vulnerabilities, result.Vulnerabilities...)
+		if sourceResults != nil {
+			log.Debug(fmt.Sprintf("Processing evaluation %d results from %s", len(sourceResults.Results), sourceResults.Source.Name))
+			for _, result := range sourceResults.Results {
+				if len(result.Vulnerabilities) > 0 {
+					log.Debug(fmt.Sprintf("Handling %d Vulnerabilities reported by %s for %s", len(result.Vulnerabilities), sourceResults.Source.Name, result.Component.BOMRef))
+					*sbom.Vulnerabilities = append(*sbom.Vulnerabilities, result.Vulnerabilities...)
+				}
 			}
 		}
 	}
@@ -272,7 +277,7 @@ func getVexyLogFile() (*os.File, error) {
 	if _, err := os.Stat(vexyLogPath); errors.Is(err, os.ErrNotExist) {
 		return os.Create(vexyLogPath)
 	} else {
-		return os.Open(vexyLogPath)
+		return os.OpenFile(vexyLogPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0640)
 	}
 }
 

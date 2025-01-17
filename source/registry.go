@@ -39,7 +39,7 @@ func (r *VulnerabilitySourceRegistry) RegisterVulnerabilitySource(name string, s
 }
 
 func (r *VulnerabilitySourceRegistry) SetConfiguration(config *config.VexyConfig, vexyVersion string) {
-	r.ValidSources = make(map[string]*VulnerabilitySource)
+	r.ValidSources = make(map[string]*VulnerabilitySource, 0)
 	for sourceName, source := range r.AllSources {
 		sourceValid := (*source).SetConfiguration(config, vexyVersion)
 		if sourceValid {

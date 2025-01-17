@@ -24,6 +24,13 @@ import (
 	cdx "github.com/CycloneDX/cyclonedx-go"
 )
 
+var (
+	NvdSource = cdx.Source{
+		Name: "NVD (National Vulnerability Database)",
+		URL:  "https://nvd.nist.gov",
+	}
+)
+
 type VulnerabilitySourceEvaluationResult struct {
 	Component       *cdx.Component
 	Vulnerabilities []cdx.Vulnerability
