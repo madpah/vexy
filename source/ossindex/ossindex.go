@@ -51,7 +51,6 @@ type OssIndexVulnerabilitySource struct {
 	apiClient     *ossindex.APIClient
 	apiContext    *context.Context
 	authenticated bool
-	configuration *ossindex.Configuration
 	components    []*cdx.Component
 	username      *string
 	password      *string

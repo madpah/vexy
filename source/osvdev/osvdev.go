@@ -42,10 +42,9 @@ var (
 )
 
 type OsvDevVulnerabilitySource struct {
-	apiClient     *osvdev.APIClient
-	apiContext    *context.Context
-	configuration *osvdev.Configuration
-	components    []*cdx.Component
+	apiClient  *osvdev.APIClient
+	apiContext *context.Context
+	components []*cdx.Component
 }
 
 func (s *OsvDevVulnerabilitySource) AddComponent(component *cdx.Component) bool {
