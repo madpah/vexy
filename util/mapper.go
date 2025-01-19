@@ -34,7 +34,7 @@ func CvssScoreToSeverity(score float64) cdx.Severity {
 	if score >= 4.0 {
 		return cdx.SeverityMedium
 	}
-	if score >= 0.0 {
+	if score > 0.0 {
 		return cdx.SeverityLow
 	}
 	return cdx.SeverityNone
@@ -50,11 +50,17 @@ func CvssVectorToScoringMethod(vector string) cdx.ScoringMethod {
 	if strings.HasPrefix(vector, "CVSS:3.0/") {
 		return cdx.ScoringMethodCVSSv3
 	}
-	if strings.HasPrefix(vector, "CVSS:2") {
+	if strings.HasPrefix(vector, "CVSS:2.0/") {
 		return cdx.ScoringMethodCVSSv2
 	}
 	if strings.HasPrefix(vector, "OWASP") {
 		return cdx.ScoringMethodOWASP
+	}
+	if strings.HasPrefix(vector, "SSVC") {
+		return cdx.ScoringMethodSSVC
+	}
+	if strings.HasPrefix(vector, "AV:") {
+		return cdx.ScoringMethodCVSSv2
 	}
 	return cdx.ScoringMethodOther
 }
