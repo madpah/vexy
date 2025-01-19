@@ -1,28 +1,56 @@
-# Exlude python build & distribution directories
-build/
-dist/
-*.egg-info*
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
 
-# Exlude *.pyc
-*.pyc
+# Folders
+_obj
+_test
 
-# Exclude test-related items
-.tox/*
+# Architecture specific extensions/prefixes
+*.[568vq]
+[568vq].out
 
-# Exclude coverage
-.coverage
-test-reports
+*.cgo1.go
+*.cgo2.c
+_cgo_defun.c
+_cgo_gotypes.go
+_cgo_export.*
 
-# Exclude Python Virtual Environment
-venv/
-.venv/
+_testmain.go
 
-# Exlude IDE related files
-.idea/*
-.vscode/*
+*.prof
 
-# Exclude generated docs
-docs/_build
+.*.swp
+.vscode
+*.code-workspace
+*.bak
 
-# vexy config files
+nexus-repo-asset-lister
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+vendor/
+
+# Go workspace file
+go.work
+
+# Any generated json, xml or log files
+*.json
+*.xml
+*.log
+
+# Exclude default vexy config files
 *.vexy.config
