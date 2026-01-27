@@ -21,21 +21,21 @@
 import argparse
 import enum
 import json
-import sys
 from datetime import datetime
-from importlib import import_module
+from importlib.metadata import version as meta_version
 from io import TextIOWrapper
 from os import getcwd, path
 from string import printable
-from typing import Dict, Optional, Set, cast
+from typing import Dict, Optional, Set
 from urllib.parse import quote
 from xml.etree import ElementTree
 
 import yaml
 from cyclonedx.exception import CycloneDxException
-from cyclonedx.model import ExternalReference, ExternalReferenceType, Tool, XsUri
+from cyclonedx.model import ExternalReference, ExternalReferenceType, XsUri
 from cyclonedx.model.bom import Bom
-from cyclonedx.output import BaseOutput
+from cyclonedx.model.tool import Tool
+from cyclonedx.output import BaseOutput, make_outputter
 from cyclonedx.schema import OutputFormat, SchemaVersion
 from rich.console import Console
 from rich.progress import Progress
@@ -51,18 +51,13 @@ class _CLI_OUTPUT_FORMAT(enum.Enum):
 
 
 _output_formats: Dict[_CLI_OUTPUT_FORMAT, OutputFormat] = {
-    _CLI_OUTPUT_FORMAT.XML: OutputFormat('Xml'),
-    _CLI_OUTPUT_FORMAT.JSON: OutputFormat('Json'),
+    _CLI_OUTPUT_FORMAT.XML: OutputFormat.XML,
+    _CLI_OUTPUT_FORMAT.JSON: OutputFormat.JSON,
 }
 _output_default_filenames = {
     _CLI_OUTPUT_FORMAT.XML: 'cyclonedx-vex.xml',
     _CLI_OUTPUT_FORMAT.JSON: 'cyclonedx-vex.json',
 }
-
-if sys.version_info >= (3, 8):
-    from importlib.metadata import version as meta_version
-else:
-    from importlib_metadata import version as meta_version
 
 try:
     __ThisToolVersion: Optional[str] = str(meta_version('vexy'))  # type: ignore[no-untyped-call]
@@ -172,7 +167,7 @@ class VexyCmd:
             )
 
             vex = Bom()
-            vex.metadata.tools.add(ThisTool)
+            vex.metadata.tools.tools.add(ThisTool)
             data_source_tasks = {}
             for data_source in self._data_sources:
                 data_source_tasks[data_source.__class__] = progress.add_task(
@@ -225,13 +220,7 @@ class VexyCmd:
         schema_version = SchemaVersion['V{}'.format(
             str(self._arguments.output_schema_version).replace('.', '_')
         )]
-        try:
-            module = import_module(f"cyclonedx.output.{self._arguments.output_format.lower()}")
-            output_klass = getattr(module, f"{output_format.value}{schema_version.value}")
-        except (ImportError, AttributeError):
-            raise ValueError(f"Unknown format {output_format.value.lower()!r}") from None
-
-        return cast(BaseOutput, output_klass(bom=bom))
+        return make_outputter(bom=bom, output_format=output_format, schema_version=schema_version)
 
     @staticmethod
     def get_arg_parser(*, prog: Optional[str] = None) -> argparse.ArgumentParser:

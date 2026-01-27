@@ -52,7 +52,7 @@ class OssIndexSource(BaseSource):
     def get_vulnerabilities(self) -> Set[Vulnerability]:
         ossi = OssIndex(enable_cache=False)
         ossi_results = ossi.get_component_report(
-            packages=list(map(lambda c: c.purl, self.valid_components))
+            packages=[c.purl for c in self.valid_components if c.purl is not None]
         )
 
         vulnerabilities: Set[Vulnerability] = set()
