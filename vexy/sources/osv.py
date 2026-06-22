@@ -19,8 +19,9 @@
 
 from typing import Any, Dict, List, Set
 
-from cyclonedx.model import OrganizationalContact, XsUri
+from cyclonedx.model import XsUri
 from cyclonedx.model.component import Component
+from cyclonedx.model.contact import OrganizationalContact
 from cyclonedx.model.impact_analysis import ImpactAnalysisAffectedStatus
 from cyclonedx.model.vulnerability import (
     BomTarget,
@@ -47,6 +48,8 @@ class OsvSource(BaseSource):
         vulnerabilities: Set[Vulnerability] = set()
 
         for component in self.valid_components:
+            if component.bom_ref.value is None:
+                continue
             osv_vulnerabilities = osv.query(package=OsvPackage(purl=component.purl))
             for osv_v in osv_vulnerabilities:
                 affected_versions: List[BomTargetVersionRange] = []
